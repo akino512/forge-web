@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script type="text/javascript" src="./forge.min.js"></script>
+  <meta charset="utf-8">
+  <title>forge-web</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      background: #a3a1a1;
+    }
+    h1,h2,h3,ol{
+      margin: 5px 0;
+    }
+    
+    a:visited {
+      color: inherit;
+    }
+
+    .flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    .container {
+      position: relative;
+      margin: auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      width: 1200px;
+      height: 100%;
+      min-height: 800px;
+      background: #e3dede;
+      overflow-y: auto;
+      font-family: sans-serif;
+      font-size: 14px;
+      line-height: 16px;
+    }
+
+    .label_lang {
+      cursor: pointer;
+      color: #a3a1a1;
+    }
+
+    .label_lang a {
+      text-decoration: none;
+    }
+
+    #mask_cover {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #8b868750;
+      position: absolute;
+    }
+
+    #tabs {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 600px;
+      margin: 10px;
+      color: #a3a1a1;
+    }
+
+    #tabs:hover {
+      color: red;
+    }
+
+    .key {
+      font-size: 14px;
+      height: 200px;
+      width: 40em;
+      resize: none;
+    }
+
+    .text {
+      font-size: 14px;
+      width: 40em;
+      height: 100px;
+    }
+
+    textarea {
+      resize: none;
+    }
+
+    .button_div {
+      padding: 5px 10px 5px 10px;
+      cursor: pointer
+    }
+
+    .header {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .footer {
+      width: calc(100% - 40px);
+      padding: 10px 20px;
+      position: absolute;
+      justify-content: space-between;
+      bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div id="mask_cover">
+      <div id="mask_text"></div>
+    </div>
+    <div class="flex header">
+      <h2 class="locale_header_title innertext"></h2>
+      <div>
+        <form id="f">
+          <input id="lang_en" type="radio" name="lang" value="en" hidden>
+          <input id="lang_zh" type="radio" name="lang" value="zh" hidden>
+          <label id="label_lang_en" class="label_lang" for="lang_en"><a href="?lang=en">en</a></label>
+          <label id="label_lang_zh" class="label_lang" for="lang_zh"><a href="?lang=zh">zh</a></label>
+        </form>
+      </div>
+    </div>
+    <nav id="tabs">
+      <div class="button_div locale_tab_rsa_cryption innertext" id="tab_rsa_cryption"></div>
+      <div class="button_div locale_tab_rsa_generate innertext" id="tab_rsa_generate"></div>
+      <div class="button_div locale_tab_about innertext" id="tab_about"></div>
+    </nav>
+    <div id="pages">
+      <div id="rsa_cryption" class="flex" style="flex-direction:column">
+        <div class="flex">
+          <div class="flex" style="flex-direction:column">
+            <div class="locale_cryption_encryption innertext"></div>
+            <textarea id="rsa_cryption_encryption_publickey"
+              class="key locale_cryption_encryption_publickey placeholder"></textarea>
+            <div>|</div>
+            <textarea id="rsa_cryption_encryption_plaintext"
+              class="text locale_cryption_encryption_plaintext placeholder"></textarea>
+            <div>|</div>
+            <div id="rsa_cryption_encryption_button_encrypt"
+              class="button_div locale_cryption_encryption_encrypt innertext"
+              style="color:#FFFFFF;background: #CC3300;"></div>
+            <div>|</div>
+            <div>v</div>
+            <textarea id="rsa_cryption_encryption_ciphertext"
+              class="text locale_cryption_encryption_ciphertext placeholder" readonly></textarea>
+          </div>
+          <div style="width: 50px;"></div>
+          <div class="flex" style="flex-direction:column">
+            <div class="locale_cryption_decryption innertext"></div>
+            <textarea id="rsa_cryption_decryption_privatekey"
+              class="key locale_cryption_decryption_privatekey placeholder"></textarea>
+            <div>|</div>
+            <textarea id="rsa_cryption_decryption_ciphertext"
+              class="text locale_cryption_decryption_ciphertext placeholder"></textarea>
+            <div>|</div>
+            <div id="rsa_cryption_decryption_button_decrypt"
+              class="button_div locale_cryption_decryption_decrypt innertext" style="background: #66CC33;"></div>
+            <div>|</div>
+            <div>v</div>
+            <textarea id="rsa_cryption_decryption_plaintext"
+              class="text locale_cryption_decryption_plaintext placeholder"></textarea>
+          </div>
+        </div>
+        <div style="height: 50px;"></div>
+        <div class="flex" style="width: 500px;">
+          <div id="button_clear" class="button_div locale_cryption_clear innertext" style="background: #FFCC00;">
+          </div>
+        </div>
+      </div>
+      <div id="rsa_generate" class="flex" style="flex-direction:column">
+        <div class="flex">
+          <div class="flex" style="flex-direction:column">
+            <div class="locale_generate_publickey innertext"></div>
+            <textarea id="rsa_generate_public_key" class="key" readonly></textarea>
+          </div>
+          <div style="width: 50px;"></div>
+          <div class="flex" style="flex-direction:column">
+            <div class="locale_generate_privatekey innertext"></div>
+            <textarea id="rsa_generate_private_key" class="key" readonly></textarea>
+          </div>
+        </div>
+        <div style="height: 50px;"></div>
+        <div class="flex" style="width: 500px;">
+          <div id="rsa_generate_button_keypair_genarate" class="button_div locale_generate_keypair_generate innertext"
+            style="background: #FFCC00;">
+          </div>
+          <div id="rsa_generate_button_keypair_save" class="button_div locale_generate_keypair_save innertext"
+            style="background: #FFCC00;">
+          </div>
+          <a id="rsa_generate_downloader" href="" style="display: none"></a>
+        </div>
+      </div>
+      <div id="xxx" class="flex" style="flex-direction:column">
+        <h2 style="width: 100%;text-align: left;" class="locale_about innertext"></h2>
+        </h2>
+        <ol style="width: 1000px;">
+          <li class="locale_about_1 innertext"></li>
+          <li class="locale_about_2 innertext"></li>
+          <li class="locale_about_3 innertext"></li>
+        </ol>
+        <h2 style="width: 100%;text-align: left;" class="locale_htu innertext"></h2>
+        <h3 style="width: 100%;text-align: left;" class="locale_htu_asymmetric_cryption innertext"></h3>
+        <ol style="width: 1000px;">
+          <li class="locale_htu_asymmetric_cryption_1 innertext"></li>
+          <li class="locale_htu_asymmetric_cryption_2 innertext"></li>
+          <li class="locale_htu_asymmetric_cryption_3 innertext"></li>
+        </ol>
+        <!-- <h3 style="width: 100%;text-align: left;" class="locale_htu_sign innertext"></h3>
+        <ol style="width: 1000px;">
+          <li class="locale_htu_sign_1 innertext"></li>
+        </ol> -->
+      </div>
+    </div>
+    <div class="flex footer">
+      <div class="locale_repository innertext"></div>
+      <div class="locale_copyright innertext"></div>
+    </div>
+</body>
+<script type="text/javascript">
+  const urlParams = new URLSearchParams(window.location.search);
+  // window.onerror = function (errMsg, url, line, column, error) {
+  //   mask.hide()
+  //   alert(error)
+  // }
+  const mask = {
+    elements: {
+      maskCover: document.getElementById("mask_cover"),
+      maskText: document.getElementById("mask_text"),
+    },
+    show(str) {
+      this.elements.maskCover.style.display = "flex"
+      this.elements.maskText.innerText = str
+    },
+    hide() {
+      this.elements.maskCover.style.display = "none"
+    },
+    init() {
+      this.hide()
+    }
+  }
+  const util = {
+    withErrorHandler(func) {
+      return () => {
+        mask.show("loading...")
+        setTimeout(() => {
+          try {
+            func()
+          } catch (err) {
+            console.log(err)
+            alert(err)
+          } finally {
+            mask.hide()
+          }
+        }, 1);
+      }
+    },
+    copySelect() {
+      if (!event.target.value) return
+      event.target.select()
+      document.execCommand("Copy")
+    },
+    toArray(collection) {
+      const arr = []
+      for (const item of collection) {
+        arr.push(item)
+      }
+      return arr
+    }
+  }
+
+  const lang = {
+    elements: {
+      labels: document.getElementsByClassName("label_lang")
+    },
+  }
+  lang.switch = (l) => {
+    urlParams.set("lang", "en")
+    for (const label of lang.elements.labels) {
+      label.style.color = "#a3a1a1"
+    }
+    l.style.color = "black"
+  }
+  lang.init = () => {
+    for (const l of lang.elements.labels) {
+      l.onclick = () => {
+
+      }
+    }
+    const paramLang = urlParams.get("lang") || "en"
+    const label = document.getElementById("label_lang_" + paramLang)
+    label.style.color = "black"
+    localee(paramLang)
+  }
+
+  const navi = {
+    elements: {
+      tabs: document.getElementById("tabs"),
+      pages: document.getElementById("pages"),
+    },
+    _tabs: null,
+    _pages: null,
+    get tabs() {
+      if (this._tabs === null) {
+        this._tabs = util.toArray(this.elements.tabs.children)
+      }
+      return this._tabs
+    },
+    get pages() {
+      if (this._pages === null) {
+        this._pages = util.toArray(this.elements.pages.children)
+      }
+      return this._pages
+    }
+  }
+  navi.switch = (t) => {
+    for (const tab of navi.tabs) {
+      tab.style.color = "#a3a1a1"
+      tab.p.style.display = "none"
+    }
+    t.p.style.display = "flex"
+    t.style.color = "black"
+  }
+  navi.init = () => {
+    for (const idx in navi.tabs) {
+      const t = navi.tabs[idx]
+      t.p = navi.pages[idx]
+      t.p.style.display = "none"
+      t.p.hidden = true
+      t.onclick = () => { navi.switch(t) }
+    }
+    navi.tabs[0].click()
+  }
+
+  // rsa_cryption
+  const rsaCryption = {
+    elements: {
+      encryptionPublickey: document.getElementById("rsa_cryption_encryption_publickey"),
+      encryptionPlaintext: document.getElementById("rsa_cryption_encryption_plaintext"),
+      encryptionCiphertext: document.getElementById("rsa_cryption_encryption_ciphertext"),
+      encryptionButtonEncrypt: document.getElementById("rsa_cryption_encryption_button_encrypt"),
+      decryptionPrivatekey: document.getElementById("rsa_cryption_decryption_privatekey"),
+      decryptionCiphertext: document.getElementById("rsa_cryption_decryption_ciphertext"),
+      decryptionPlaintext: document.getElementById("rsa_cryption_decryption_plaintext"),
+      decryptionButtonDecrypt: document.getElementById("rsa_cryption_decryption_button_decrypt"),
+      buttonClear: document.getElementById("button_clear"),
+    },
+    get encryptionPublickey() {
+      return this.elements.encryptionPublickey.value
+    },
+    get encryptionPlaintext() {
+      return this.elements.encryptionPlaintext.value
+    },
+    set encryptionPlaintext(str) {
+      this.elements.encryptionPlaintext.value = str
+    },
+    set encryptionCiphertext(str) {
+      this.elements.encryptionCiphertext.value = str
+    },
+    get decryptionPrivatekey() {
+      return this.elements.decryptionPrivatekey.value
+    },
+    get decryptionCiphertext() {
+      return this.elements.decryptionCiphertext.value
+    },
+    set decryptionCiphertext(str) {
+      this.elements.decryptionCiphertext.value = str
+    },
+    set decryptionPlaintext(str) {
+      this.elements.decryptionPlaintext.value = str
+    }
+  }
+  rsaCryption.encrypt = () => {
+    if (rsaCryption.encryptionPublickey == "") {
+      throw "Please input public key"
+    }
+    if (rsaCryption.encryptionPlaintext == "") {
+      throw "Please input plain text"
+    }
+    const publickey = forge.pki.publicKeyFromPem(rsaCryption.encryptionPublickey);
+    const buffer = forge.util.createBuffer();
+    buffer.data = forge.util.encodeUtf8(rsaCryption.encryptionPlaintext)
+    const encrypted = forge.util.encode64(publickey.encrypt(buffer.bytes()))
+    rsaCryption.encryptionCiphertext = encrypted
+  }
+  rsaCryption.decrypt = () => {
+    if (rsaCryption.decryptionPrivatekey == "") {
+      throw "Please input private key"
+    }
+    const privateKey = forge.pki.privateKeyFromPem(rsaCryption.decryptionPrivatekey);
+    const decrypted = privateKey.decrypt(forge.util.decode64(rsaCryption.decryptionCiphertext))
+    rsaCryption.decryptionPlaintext = forge.util.decodeUtf8(decrypted)
+  }
+  rsaCryption.clear = () => {
+    rsaCryption.encryptionPlaintext = ""
+    rsaCryption.encryptionCiphertext = ""
+    rsaCryption.decryptionPlaintext = ""
+    rsaCryption.decryptionCiphertext = ""
+  }
+  rsaCryption.init = () => {
+    rsaCryption.elements.encryptionCiphertext.onclick = util.copySelect
+    rsaCryption.elements.encryptionButtonEncrypt.onclick = util.withErrorHandler(rsaCryption.encrypt)
+    rsaCryption.elements.decryptionButtonDecrypt.onclick = util.withErrorHandler(rsaCryption.decrypt)
+    rsaCryption.elements.buttonClear.onclick = rsaCryption.clear
+  }
+
+  //rsa_generate
+  const rsaGenerate = {
+    elements: {
+      publicKey: document.getElementById("rsa_generate_public_key"),
+      privateKey: document.getElementById("rsa_generate_private_key"),
+      buttonKeypairGenarate: document.getElementById("rsa_generate_button_keypair_genarate"),
+      buttonKeypairSave: document.getElementById("rsa_generate_button_keypair_save"),
+      downloader: document.getElementById("rsa_generate_downloader"),
+    },
+    get publickey() {
+      return this.elements.publicKey.value
+    },
+    set publickey(str) {
+      this.elements.publicKey.value = str
+    },
+    get privatekey() {
+      return this.elements.privateKey.value
+    },
+    set privatekey(str) {
+      this.elements.privateKey.value = str
+    },
+  }
+  rsaGenerate.keypairGenarate = function () {
+    mask.show("genarating...")
+    const rsa = forge.pki.rsa;
+    const keypair = rsa.generateKeyPair({ bits: 4096, e: 0x10001 }, (err, keypair) => {
+      mask.hide()
+      if (err) throw err
+      rsaGenerate.publickey = forge.pki.publicKeyToPem(keypair.publicKey);
+      rsaGenerate.privatekey = forge.pki.privateKeyToPem(keypair.privateKey);
+    })
+  }
+  rsaGenerate.keypairSave = function () {
+    const pubk = rsaGenerate.publickey
+    const prik = rsaGenerate.privatekey
+    if (pubk == "" || prik == "") {
+      alert("please genarate keypair")
+      return
+    }
+    const href = window.encodeURI("data:text/plain;charset=utf-8," + pubk + prik)
+    rsaGenerate.elements.downloader.href = href
+    rsaGenerate.elements.downloader.download = "keypair"
+    rsaGenerate.elements.downloader.click()
+  }
+  rsaGenerate.init = function () {
+    rsaGenerate.elements.publicKey.onclick = util.copySelect
+    rsaGenerate.elements.privateKey.onclick = util.copySelect
+    rsaGenerate.elements.buttonKeypairGenarate.onclick = rsaGenerate.keypairGenarate
+    rsaGenerate.elements.buttonKeypairSave.onclick = rsaGenerate.keypairSave
+  }
+
+
+  const locale = {
+    locale_header_title: {
+      en: "forge-web",
+      zh: "forge-web",
+    },
+    locale_tab_rsa_cryption: {
+      en: "encryption/decryption",
+      zh: "加密/解密"
+    },
+    locale_tab_rsa_generate: {
+      en: "keypair_generating",
+      zh: "生成密钥对",
+    },
+    locale_tab_about: {
+      en: "about",
+      zh: "关于",
+    },
+    locale_cryption_encryption: {
+      en: "encryption",
+      zh: "加密",
+    },
+    locale_cryption_encryption_publickey: {
+      en: "-----BEGIN RSA PRIVATE KEY-----\n<paste someone's public key here>\n-----END RSA PRIVATE KEY-----",
+      zh: "-----BEGIN PUBLIC KEY-----\n<请贴入收信人公钥>\n-----END PUBLIC KEY-----",
+    },
+    locale_cryption_encryption_plaintext: {
+      en: "plaintext to be encrypted",
+      zh: "请输入将被加密的明文",
+    },
+    locale_cryption_encryption_encrypt: {
+      en: "encrypt",
+      zh: "加密",
+    },
+    locale_cryption_encryption_ciphertext: {
+      en: "ciphertext will be generated here",
+      zh: "此处将生成密文",
+    },
+    locale_cryption_decryption: {
+      en: "decryption",
+      zh: "解密",
+    },
+    locale_cryption_decryption_privatekey: {
+      en: "-----BEGIN RSA PRIVATE KEY-----\n<paste your private key here>\n-----END RSA PRIVATE KEY-----",
+      zh: "-----BEGIN RSA PRIVATE KEY-----\n<请贴入你的私钥>\n-----END RSA PRIVATE KEY-----",
+    },
+    locale_cryption_decryption_ciphertext: {
+      en: "ciphertext to be decrypted",
+      zh: "请输入将被解密的密文",
+    },
+    locale_cryption_decryption_decrypt: {
+      en: "decrypt",
+      zh: "解密",
+    },
+    locale_cryption_decryption_plaintext: {
+      en: "plaintext",
+      zh: "此处将解出明文",
+    },
+    locale_cryption_clear: {
+      en: "clear messages",
+      zh: "清空明文密文",
+    },
+    locale_generate_publickey: {
+      en: "public_key",
+      zh: "公钥",
+    },
+    locale_generate_privatekey: {
+      en: "private_key",
+      zh: "私钥",
+    },
+    locale_generate_keypair_generate: {
+      en: "generate_keypair",
+      zh: "生成新密钥对",
+    },
+    locale_generate_keypair_save: {
+      en: "save_keypair",
+      zh: "保存密钥对",
+    },
+    locale_about: {
+      en: "About",
+      zh: "关于",
+    },
+    locale_about_1: {
+      en: "This is a applicaton for message encryption, using <a href='https://github.com/digitalbazaar/forge'>digitalbazaar/forge</a>'s API and follows it's license. It's completely open-source and free.",
+      zh: "这是一个用于消息加密的Web应用，<a href='https://github.com/digitalbazaar/forge'>digitalbazaar/forge</a>API并遵循其开源协议。本应用完全开源并免费使用。",
+    },
+    locale_about_2: {
+      en: "All computing is done locally ,hence no additional network request will be sent.You can also save this page to your computer(ctrl-s in most browser).",
+      zh: "所有计算均运行在本地，除静态网络资源外，不会发送额外网络请求。你也可以使用ctrl-s将本页面保存在本地。",
+    },
+    locale_about_3: {
+      en: "Only asymmetric encryption is available in current edition.signature/verifying and symmetric encryption may be implemented in the future.",
+      zh: "目前仅支持非对称加密，之后或许添加加签/验签和对称加密功能。",
+    },
+    locale_htu: {
+      en: "How to use",
+      zh: "使用方法",
+    },
+    locale_htu_asymmetric_cryption: {
+      en: "Asymmetric encryption/decryption",
+      zh: "非对称加密/解密",
+    },
+    locale_htu_asymmetric_cryption_1: {
+      en: "Keypair generating: If it's your first time to use this application,please generate a keypair.You should exchange ONLY PUBLICKEY with someone you want to cummunicate with.",
+      zh: "密钥对：第一次使用请生成密钥对并保存。如果你想和某人通信，请和他交换公钥（不要暴露私钥）。",
+    },
+    locale_htu_asymmetric_cryption_2: {
+      en: "Encryption: If you want to send someone messages, use publickey that people told you to encrypt text and send encrypted messages to that people.",
+      zh: "加密：如果你想要给某人发送消息，使用他的公钥加密明文，然后将生成的密文发送给他。",
+    },
+    locale_htu_asymmetric_cryption_3: {
+      en: "Decryption: If you got some messages encrypted,try to use your privatekey to decrypt them.",
+      zh: "解密：如果你收到密文，请尝试用你自己的私钥解密。",
+    },
+    // locale_htu_sign: {
+    //   en: "Signature/verifying",
+    //   zh: "加签/验签",
+    // },
+    // locale_htu_sign_1: {
+    //   en: "may be later",
+    //   zh: "may be later",
+    // },
+    locale_repository: {
+      en: "Github:<a href='https://github.com/akino512/forge-web'>akino512/forge-web</a>",
+      zh: "Github:<a href='https://github.com/akino512/forge-web'>akino512/forge-web</a>",
+    },
+    locale_copyright: {
+      en: "Copyright©2023 forge-web | All rights reserved",
+      zh: "Copyright©2023 forge-web | All rights reserved",
+    },
+  }
+
+  function localee(lang) {
+    const keys = Object.keys(locale)
+    for (const key of keys) {
+      const items = document.getElementsByClassName(key);
+      const value = locale[key][lang]
+      for (const item of items) {
+        if (item.classList.contains("innertext")) {
+          item.innerHTML = value
+        } else if (item.classList.contains("placeholder")) {
+          item.placeholder = value
+        }
+      }
+    }
+  }
+  function onload() {
+    mask.init()
+    lang.init()
+    navi.init()
+    rsaCryption.init()
+    rsaGenerate.init()
+  }
+  onload();
+</script>
+
+</html>
